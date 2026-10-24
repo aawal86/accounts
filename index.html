@@ -160,6 +160,17 @@ tr:hover .ri{transform:scale(1.12) rotate(-6deg);background:var(--accent);color:
                 </table>
             </div>
         </div>
+                <div class="section-card">
+            <div class="table-header-wrap"><h2><i class="fas fa-chart-pie"></i>Invesment</h2></div>
+            <div class="table-responsive">
+                <table id="tableInvestment">
+                    <tr><th>Description</th><th style="text-align: right;">Value</th></tr>
+                    <tr><td>Down Payment</td><td contenteditable="true" id="investmentDownPaymentInput" style="text-align: right;" oninput="calculateAll()">0.00</td></tr>
+                    <tr><td>Monthly Installment</td><td contenteditable="true" id="investmentInstallmentInput" style="text-align: right;" oninput="calculateAll()">0.00</td></tr>
+                    <tr class="calculated-row"><td>Total</td><td id="investmentTotalResult" style="text-align: right;">0.00</td></tr>
+                </table>
+            </div>
+        </div>
         <div class="section-card" id="uaeSectionCard">
             <div class="table-header-wrap"><h2><i class="fas fa-building-columns"></i>UAE Accounts</h2><button class="add-row-btn" onclick="addUaeRow()"><i class="fas fa-plus"></i> Add Account</button></div>
             <div class="table-responsive">
@@ -234,17 +245,6 @@ tr:hover .ri{transform:scale(1.12) rotate(-6deg);background:var(--accent);color:
                         <tr class="calculated-row"><td colspan="2">Total</td><td id="expTotalResult" style="text-align: right;">0.00</td></tr>
                         <tr class="calculated-row"><td colspan="2">In AED</td><td id="expInAedResult" style="text-align: right;">0.00</td></tr>
                     </tfoot>
-                </table>
-            </div>
-        </div>
-        <div class="section-card">
-            <div class="table-header-wrap"><h2><i class="fas fa-chart-pie"></i>Invesment</h2></div>
-            <div class="table-responsive">
-                <table id="tableInvestment">
-                    <tr><th>Description</th><th style="text-align: right;">Value</th></tr>
-                    <tr><td>Down Payment</td><td contenteditable="true" id="investmentDownPaymentInput" style="text-align: right;" oninput="calculateAll()">0.00</td></tr>
-                    <tr><td>Monthly Installment</td><td contenteditable="true" id="investmentInstallmentInput" style="text-align: right;" oninput="calculateAll()">0.00</td></tr>
-                    <tr class="calculated-row"><td>Total</td><td id="investmentTotalResult" style="text-align: right;">0.00</td></tr>
                 </table>
             </div>
         </div>
