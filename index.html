@@ -69,8 +69,6 @@ button,input{font-family:inherit}
 @media(min-width:900px){.sections{column-count:2;column-gap:18px}}
 .section-card{break-inside:avoid;background:var(--card-bg);border:1px solid var(--border-color);border-radius:var(--radius);padding:16px;margin-bottom:14px;box-shadow:var(--shadow)}
 @media(min-width:900px){.section-card{margin-bottom:18px;padding:20px}}
-.reveal{opacity:0;transform:translateY(22px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
-.reveal.in{opacity:1;transform:none}
 .table-header-wrap{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}
 h2{display:flex;align-items:center;gap:11px;font-size:16px;font-weight:800;letter-spacing:-.02em}
 h2 i{flex:none;width:34px;height:34px;border-radius:11px;display:grid;place-items:center;font-size:14px;color:#04120d;background:linear-gradient(135deg,var(--accent),var(--accent-2))}
@@ -111,7 +109,7 @@ td[contenteditable="true"]{color:var(--accent);background:color-mix(in srgb,var(
 .footer-copyright{font:500 11px var(--f-mono);letter-spacing:.06em;color:var(--text-main)}
 .ri{display:inline-grid;place-items:center;width:24px;height:24px;margin-right:9px;border-radius:8px;vertical-align:middle;flex:none;font-size:10.5px;color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent);transition:transform .3s var(--ease),background .3s,color .3s}
 tr:hover .ri{transform:scale(1.12) rotate(-6deg);background:var(--accent);color:#04120d}
-@media print{body{background:#fff!important;color:#000!important;padding:0!important}.container{max-width:100%!important;margin:0!important;padding:0!important}.navbar,.widgets-grid,.action-bar,.footer,.add-row-btn,.delete-row-btn,#jsonFileInput{display:none!important}.print-header{display:block!important}#uaeSectionCard{page-break-before:always}.section-card{border:none!important;box-shadow:none!important;padding:0!important;margin-bottom:15px!important}table{width:100%!important;border-collapse:collapse!important}th,td{padding:6px 10px!important;border:1px solid #94a3b8!important;color:#000!important}th{background-color:#f1f5f9!important} .hero,.aurora{display:none!important}}
+@media print{body{background:#fff!important;color:#000!important;padding:0!important}.container{max-width:100%!important;margin:0!important;padding:0!important}.navbar,.widgets-grid,.action-bar,.footer,.add-row-btn,.delete-row-btn,#jsonFileInput{display:none!important}.print-header{display:block!important}#uaeSectionCard{page-break-before:always}.section-card{border:none!important;box-shadow:none!important;padding:0!important;margin-bottom:15px!important}table{width:100%!important;border-collapse:collapse!important}th,td{padding:6px 10px!important;border:1px solid #94a3b8!important;color:#000!important}th{background-color:#f1f5f9!important}.hero,.aurora{display:none!important}}
 </style>
 </head>
 <body>
@@ -288,23 +286,29 @@ tr:hover .ri{transform:scale(1.12) rotate(-6deg);background:var(--accent);color:
 <script>
 let defUae=[{name:"HSBC",val:"0.00"},{name:"HSBC GMA",val:"0.00"},{name:"Ruya",val:"0.00"},{name:"Payit",val:"0.00"},{name:"Botim",val:"0.00"},{name:"Tabby Debit",val:"0.00"}];
 let defExp=[{name:"For Mother",val:"0.00"},{name:"For House Rent",val:"0.00"},{name:"For WiFi Bill",val:"0.00"},{name:"For Gas Cylinder",val:"0.00"},{name:"For Dust Bill",val:"0.00"},{name:"For Madrasha Fee's",val:"0.00"},{name:"For Tutor Fee's",val:"0.00"},{name:"For Electric Bill",val:"0.00"},{name:"For Food & Others",val:"0.00"}];
+
 function renderUaeTable(accs){let tb=document.getElementById('uaeTbody');tb.innerHTML='';accs.forEach((a,i)=>{tb.innerHTML+=`<tr><td><span contenteditable="true" class="editable-label" oninput="calculateAll()">${a.name}</span></td><td style="text-align: center;"><button class="delete-row-btn" onclick="deleteUaeRow(this)" title="Delete"><i class="fas fa-trash"></i></button></td><td style="text-align: right;"><span contenteditable="true" class="uae-val" id="uaeVal_${i}" oninput="calculateAll()">${a.val}</span></td></tr>`;});}
 function addUaeRow(){let tb=document.getElementById('uaeTbody');tb.innerHTML+=`<tr><td><span contenteditable="true" class="editable-label" oninput="calculateAll()">New Account</span></td><td style="text-align: center;"><button class="delete-row-btn" onclick="deleteUaeRow(this)" title="Delete"><i class="fas fa-trash"></i></button></td><td style="text-align: right;"><span contenteditable="true" class="uae-val" oninput="calculateAll()">0.00</span></td></tr>`;calculateAll();}
 function deleteUaeRow(b){b.closest('tr').remove();calculateAll();}
 function renderExpensesTable(exps){let tb=document.getElementById('expensesTbody');tb.innerHTML='';exps.forEach((e,i)=>{tb.innerHTML+=`<tr><td><span contenteditable="true" class="editable-label" oninput="calculateAll()">${e.name}</span></td><td style="text-align: center;"><button class="delete-row-btn" onclick="deleteExpenseRow(this)" title="Delete"><i class="fas fa-trash"></i></button></td><td style="text-align: right;"><span contenteditable="true" class="exp-val" id="expVal_${i}" oninput="calculateAll()">${e.val}</span></td></tr>`;});}
 function addExpenseRow(){let tb=document.getElementById('expensesTbody');tb.innerHTML+=`<tr><td><span contenteditable="true" class="editable-label" oninput="calculateAll()">New Expense</span></td><td style="text-align: center;"><button class="delete-row-btn" onclick="deleteExpenseRow(this)" title="Delete"><i class="fas fa-trash"></i></button></td><td style="text-align: right;"><span contenteditable="true" class="exp-val" oninput="calculateAll()">0.00</span></td></tr>`;calculateAll();}
 function deleteExpenseRow(b){b.closest('tr').remove();calculateAll();}
+
 function updateDateTime(){let n=new Date();document.getElementById('liveTime').innerText=n.toLocaleTimeString();document.getElementById('footerYear').innerText=n.getFullYear();}
 setInterval(updateDateTime,1000);updateDateTime();
+
 async function initUserLocationAndWidgets(){try{let res=await fetch('https://ipapi.co/json/');let d=await res.json();if(d&&d.city){document.getElementById('locationText').innerText=`${d.city}, ${d.country_name||d.country}`;fetchWeather(d.latitude,d.longitude);}else{throw new Error();}}catch(e){document.getElementById('locationText').innerText="Dubai, UAE";fetchWeather(25.2048,55.2708);}}
 async function fetchWeather(lat,lon){try{let res=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code`);let d=await res.json();if(d&&d.current){document.getElementById('weatherTemp').innerText=`${Math.round(d.current.temperature_2m)}°C`;document.getElementById('weatherCondition').innerText="Clear Sky";}}catch(e){document.getElementById('weatherCondition').innerText="Weather unavailable";}}
 initUserLocationAndWidgets();
+
 function handlePrint(){let n=new Date();document.getElementById('printTimestamp').innerText=`তারিখ ও সময়: ${n.toLocaleString('bn-BD')}`;window.print();}
 function getCalendarData(){let n=new Date(),y=n.getFullYear(),m=n.getMonth(),t=n.getDate(),tot=new Date(y,m+1,0).getDate(),sun=0,psun=0;for(let d=1;d<=tot;d++){let c=new Date(y,m,d);if(c.getDay()===0){sun++;if(d<=t)psun++;}}let w=tot-sun;return{workingDaysTotal:w>0?w:1,pastWorkingDays:(t-psun)>=0?(t-psun):0};}
 function renderDailyCalendar(){let n=new Date(),y=n.getFullYear(),m=n.getMonth(),t=n.getDate(),mn=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],fmn=["January","February","March","April","May","June","July","August","September","October","November","December"],wd=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];document.getElementById('calMonthName').innerText=mn[m];document.getElementById('calDayNum').innerText=t<10?'0'+t:t;document.getElementById('calWeekdayName').innerText=wd[n.getDay()];document.getElementById('calFullDateText').innerText=`${fmn[m]} ${t}, ${y}`;for(let i=1;i<=5;i++){let td=new Date(y,m+i,1),lbl=`${fmn[td.getMonth()]} ${td.getFullYear()}`;document.getElementById(`ccMonth${i}Label`).innerText=lbl;document.getElementById(`splitMonth${i}Label`).innerText=lbl;}}
 renderDailyCalendar();
+
 function toggleTheme(){let h=document.documentElement,b=document.getElementById('themeBtn');if(h.getAttribute('data-theme')==='light'){h.setAttribute('data-theme','dark');b.innerText='☀️';localStorage.setItem('abdul_theme','dark');}else{h.setAttribute('data-theme','light');b.innerText='🌙';localStorage.setItem('abdul_theme','light');}}
 function getNum(v){let x=parseFloat(v);return isNaN(x)?0:x;}
+
 function calculateAll(){
   let rate=getNum(document.getElementById('rateInput').innerText),aed=getNum(document.getElementById('aedAmountInput').innerText);
   let inc=rate+(rate*0.025);document.getElementById('incentiveResult').innerText=inc.toFixed(4);
@@ -344,29 +348,192 @@ function calculateAll(){
   document.getElementById('zakatPayableResult').innerText=zPay.toFixed(2);
   saveDataSilently();
 }
+
 function exportToJSON(){
   let uaeData=[];document.querySelectorAll('#uaeTbody tr').forEach(tr=>uaeData.push({name:tr.querySelector('.editable-label').innerText,val:tr.querySelector('.uae-val').innerText}));
   let expData=[];document.querySelectorAll('#expensesTbody tr').forEach(tr=>expData.push({name:tr.querySelector('.editable-label').innerText,val:tr.querySelector('.exp-val').innerText}));
-  let ds={uaeAccounts:uaeData,expenses:expData,rate:document.getElementById('rateInput').innerText,aedAmount:document.getElementById('aedAmountInput').innerText};
-  let blob=new Blob([JSON.stringify(ds,null,2)],{type:"application/json"});let url=URL.createObjectURL(blob);let a=document.createElement('a');a.href=url;a.download=`Backup.json`;a.click();
+  let ds={
+    uaeAccounts:uaeData, expenses:expData,
+    rate:document.getElementById('rateInput').innerText,
+    aedAmount:document.getElementById('aedAmountInput').innerText,
+    absentDays:document.getElementById('absentDaysInput').innerText,
+    otDays:document.getElementById('otDaysInput').innerText,
+    mtbSavings:document.getElementById('mtbSavingsInput').innerText,
+    mtbNrb:document.getElementById('mtbNrbInput').innerText,
+    bracProvashi:document.getElementById('bracProvashiInput').innerText,
+    dbblAgent:document.getElementById('dbblAgentInput').innerText,
+    ucblIslamic:document.getElementById('ucblIslamicInput').innerText,
+    dbblCore:document.getElementById('dbblCoreInput').innerText,
+    pubaliIslamic:document.getElementById('pubaliIslamicInput').innerText,
+    ibblSavings:document.getElementById('ibblSavingsInput').innerText,
+    ccMonth1:document.getElementById('ccMonth1Input').innerText,
+    ccMonth2:document.getElementById('ccMonth2Input').innerText,
+    ccMonth3:document.getElementById('ccMonth3Input').innerText,
+    ccMonth4:document.getElementById('ccMonth4Input').innerText,
+    ccMonth5:document.getElementById('ccMonth5Input').innerText,
+    tabbyLimit:document.getElementById('tabbyLimitInput').innerText,
+    tabbySplit:document.getElementById('tabbySplitInput').innerText,
+    splitMonth1:document.getElementById('splitMonth1Input').innerText,
+    splitMonth2:document.getElementById('splitMonth2Input').innerText,
+    splitMonth3:document.getElementById('splitMonth3Input').innerText,
+    splitMonth4:document.getElementById('splitMonth4Input').innerText,
+    splitMonth5:document.getElementById('splitMonth5Input').innerText,
+    investmentDownPayment:document.getElementById('investmentDownPaymentInput').innerText,
+    investmentInstallment:document.getElementById('investmentInstallmentInput').innerText,
+    zakatCash:document.getElementById('zakatCashInput').innerText,
+    zakatGoldGram:document.getElementById('zakatGoldGramInput').innerText,
+    zakatGoldPrice:document.getElementById('zakatGoldPriceInput').innerText,
+    zakatBusiness:document.getElementById('zakatBusinessInput').innerText,
+    zakatReceivables:document.getElementById('zakatReceivablesInput').innerText,
+    zakatLiabilities:document.getElementById('zakatLiabilitiesInput').innerText,
+    zakatSilverPrice:document.getElementById('zakatSilverPriceInput').innerText
+  };
+  let blob=new Blob([JSON.stringify(ds,null,2)],{type:"application/json"});let url=URL.createObjectURL(blob);let a=document.createElement('a');a.href=url;a.download=`Financial_Dashboard_Backup_${new Date().toISOString().slice(0,10)}.json`;a.click();
 }
+
 function importFromJSON(e){
   let f=e.target.files[0];if(!f)return;let r=new FileReader();
-  r.onload=function(ev){try{let ds=JSON.parse(ev.target.result);if(ds.uaeAccounts)renderUaeTable(ds.uaeAccounts);if(ds.expenses)renderExpensesTable(ds.expenses);calculateAll();alert('Restored!');}catch(err){alert('Error!');}};
+  r.onload=function(ev){
+    try{
+      let ds=JSON.parse(ev.target.result);
+      if(ds.uaeAccounts)renderUaeTable(ds.uaeAccounts);
+      if(ds.expenses)renderExpensesTable(ds.expenses);
+
+      if(ds.rate!==undefined)document.getElementById('rateInput').innerText=ds.rate;
+      if(ds.aedAmount!==undefined)document.getElementById('aedAmountInput').innerText=ds.aedAmount;
+      if(ds.absentDays!==undefined)document.getElementById('absentDaysInput').innerText=ds.absentDays;
+      if(ds.otDays!==undefined)document.getElementById('otDaysInput').innerText=ds.otDays;
+      if(ds.mtbSavings!==undefined)document.getElementById('mtbSavingsInput').innerText=ds.mtbSavings;
+      if(ds.mtbNrb!==undefined)document.getElementById('mtbNrbInput').innerText=ds.mtbNrb;
+      if(ds.bracProvashi!==undefined)document.getElementById('bracProvashiInput').innerText=ds.bracProvashi;
+      if(ds.dbblAgent!==undefined)document.getElementById('dbblAgentInput').innerText=ds.dbblAgent;
+      if(ds.ucblIslamic!==undefined)document.getElementById('ucblIslamicInput').innerText=ds.ucblIslamic;
+      if(ds.dbblCore!==undefined)document.getElementById('dbblCoreInput').innerText=ds.dbblCore;
+      if(ds.pubaliIslamic!==undefined)document.getElementById('pubaliIslamicInput').innerText=ds.pubaliIslamic;
+      if(ds.ibblSavings!==undefined)document.getElementById('ibblSavingsInput').innerText=ds.ibblSavings;
+      if(ds.ccMonth1!==undefined)document.getElementById('ccMonth1Input').innerText=ds.ccMonth1;
+      if(ds.ccMonth2!==undefined)document.getElementById('ccMonth2Input').innerText=ds.ccMonth2;
+      if(ds.ccMonth3!==undefined)document.getElementById('ccMonth3Input').innerText=ds.ccMonth3;
+      if(ds.ccMonth4!==undefined)document.getElementById('ccMonth4Input').innerText=ds.ccMonth4;
+      if(ds.ccMonth5!==undefined)document.getElementById('ccMonth5Input').innerText=ds.ccMonth5;
+      if(ds.tabbyLimit!==undefined)document.getElementById('tabbyLimitInput').innerText=ds.tabbyLimit;
+      if(ds.tabbySplit!==undefined)document.getElementById('tabbySplitInput').innerText=ds.tabbySplit;
+      if(ds.splitMonth1!==undefined)document.getElementById('splitMonth1Input').innerText=ds.splitMonth1;
+      if(ds.splitMonth2!==undefined)document.getElementById('splitMonth2Input').innerText=ds.splitMonth2;
+      if(ds.splitMonth3!==undefined)document.getElementById('splitMonth3Input').innerText=ds.splitMonth3;
+      if(ds.splitMonth4!==undefined)document.getElementById('splitMonth4Input').innerText=ds.splitMonth4;
+      if(ds.splitMonth5!==undefined)document.getElementById('splitMonth5Input').innerText=ds.splitMonth5;
+      if(ds.investmentDownPayment!==undefined)document.getElementById('investmentDownPaymentInput').innerText=ds.investmentDownPayment;
+      if(ds.investmentInstallment!==undefined)document.getElementById('investmentInstallmentInput').innerText=ds.investmentInstallment;
+      if(ds.zakatCash!==undefined)document.getElementById('zakatCashInput').innerText=ds.zakatCash;
+      if(ds.zakatGoldGram!==undefined)document.getElementById('zakatGoldGramInput').innerText=ds.zakatGoldGram;
+      if(ds.zakatGoldPrice!==undefined)document.getElementById('zakatGoldPriceInput').innerText=ds.zakatGoldPrice;
+      if(ds.zakatBusiness!==undefined)document.getElementById('zakatBusinessInput').innerText=ds.zakatBusiness;
+      if(ds.zakatReceivables!==undefined)document.getElementById('zakatReceivablesInput').innerText=ds.zakatReceivables;
+      if(ds.zakatLiabilities!==undefined)document.getElementById('zakatLiabilitiesInput').innerText=ds.zakatLiabilities;
+      if(ds.zakatSilverPrice!==undefined)document.getElementById('zakatSilverPriceInput').innerText=ds.zakatSilverPrice;
+
+      calculateAll();
+      alert('Backup restored successfully!');
+    }catch(err){alert('Failed to read backup file.');}
+    e.target.value='';
+  };
   r.readAsText(f);
 }
+
 function saveDataSilently(){
   let uaeData=[];document.querySelectorAll('#uaeTbody tr').forEach(tr=>uaeData.push({name:tr.querySelector('.editable-label').innerText,val:tr.querySelector('.uae-val').innerText}));
   let expData=[];document.querySelectorAll('#expensesTbody tr').forEach(tr=>expData.push({name:tr.querySelector('.editable-label').innerText,val:tr.querySelector('.exp-val').innerText}));
-  localStorage.setItem('abdul_fin_v21',JSON.stringify({uaeAccounts:uaeData,expenses:expData}));
+  let ds={
+    uaeAccounts:uaeData, expenses:expData,
+    rate:document.getElementById('rateInput').innerText,
+    aedAmount:document.getElementById('aedAmountInput').innerText,
+    absentDays:document.getElementById('absentDaysInput').innerText,
+    otDays:document.getElementById('otDaysInput').innerText,
+    mtbSavings:document.getElementById('mtbSavingsInput').innerText,
+    mtbNrb:document.getElementById('mtbNrbInput').innerText,
+    bracProvashi:document.getElementById('bracProvashiInput').innerText,
+    dbblAgent:document.getElementById('dbblAgentInput').innerText,
+    ucblIslamic:document.getElementById('ucblIslamicInput').innerText,
+    dbblCore:document.getElementById('dbblCoreInput').innerText,
+    pubaliIslamic:document.getElementById('pubaliIslamicInput').innerText,
+    ibblSavings:document.getElementById('ibblSavingsInput').innerText,
+    ccMonth1:document.getElementById('ccMonth1Input').innerText,
+    ccMonth2:document.getElementById('ccMonth2Input').innerText,
+    ccMonth3:document.getElementById('ccMonth3Input').innerText,
+    ccMonth4:document.getElementById('ccMonth4Input').innerText,
+    ccMonth5:document.getElementById('ccMonth5Input').innerText,
+    tabbyLimit:document.getElementById('tabbyLimitInput').innerText,
+    tabbySplit:document.getElementById('tabbySplitInput').innerText,
+    splitMonth1:document.getElementById('splitMonth1Input').innerText,
+    splitMonth2:document.getElementById('splitMonth2Input').innerText,
+    splitMonth3:document.getElementById('splitMonth3Input').innerText,
+    splitMonth4:document.getElementById('splitMonth4Input').innerText,
+    splitMonth5:document.getElementById('splitMonth5Input').innerText,
+    investmentDownPayment:document.getElementById('investmentDownPaymentInput').innerText,
+    investmentInstallment:document.getElementById('investmentInstallmentInput').innerText,
+    zakatCash:document.getElementById('zakatCashInput').innerText,
+    zakatGoldGram:document.getElementById('zakatGoldGramInput').innerText,
+    zakatGoldPrice:document.getElementById('zakatGoldPriceInput').innerText,
+    zakatBusiness:document.getElementById('zakatBusinessInput').innerText,
+    zakatReceivables:document.getElementById('zakatReceivablesInput').innerText,
+    zakatLiabilities:document.getElementById('zakatLiabilitiesInput').innerText,
+    zakatSilverPrice:document.getElementById('zakatSilverPriceInput').innerText
+  };
+  localStorage.setItem('abdul_fin_v21',JSON.stringify(ds));
 }
+
 function saveData(){calculateAll();let m=document.getElementById('success-msg');m.style.display='inline';setTimeout(()=>m.style.display='none',3000);}
+
 window.onload=function(){
   if(localStorage.getItem('abdul_theme')==='dark'){document.documentElement.setAttribute('data-theme','dark');document.getElementById('themeBtn').innerText='☀️';}
   let saved=localStorage.getItem('abdul_fin_v21');
-  if(saved){try{let d=JSON.parse(saved);renderUaeTable(d.uaeAccounts||defUae);renderExpensesTable(d.expenses||defExp);}catch(err){renderUaeTable(defUae);renderExpensesTable(defExp);}}else{renderUaeTable(defUae);renderExpensesTable(defExp);}
+  if(saved){
+    try{
+      let d=JSON.parse(saved);
+      renderUaeTable(d.uaeAccounts||defUae);
+      renderExpensesTable(d.expenses||defExp);
+      if(d.rate!==undefined)document.getElementById('rateInput').innerText=d.rate;
+      if(d.aedAmount!==undefined)document.getElementById('aedAmountInput').innerText=d.aedAmount;
+      if(d.absentDays!==undefined)document.getElementById('absentDaysInput').innerText=d.absentDays;
+      if(d.otDays!==undefined)document.getElementById('otDaysInput').innerText=d.otDays;
+      if(d.mtbSavings!==undefined)document.getElementById('mtbSavingsInput').innerText=d.mtbSavings;
+      if(d.mtbNrb!==undefined)document.getElementById('mtbNrbInput').innerText=d.mtbNrb;
+      if(d.bracProvashi!==undefined)document.getElementById('bracProvashiInput').innerText=d.bracProvashi;
+      if(d.dbblAgent!==undefined)document.getElementById('dbblAgentInput').innerText=d.dbblAgent;
+      if(d.ucblIslamic!==undefined)document.getElementById('ucblIslamicInput').innerText=d.ucblIslamic;
+      if(d.dbblCore!==undefined)document.getElementById('dbblCoreInput').innerText=d.dbblCore;
+      if(d.pubaliIslamic!==undefined)document.getElementById('pubaliIslamicInput').innerText=d.pubaliIslamic;
+      if(d.ibblSavings!==undefined)document.getElementById('ibblSavingsInput').innerText=d.ibblSavings;
+      if(d.ccMonth1!==undefined)document.getElementById('ccMonth1Input').innerText=d.ccMonth1;
+      if(d.ccMonth2!==undefined)document.getElementById('ccMonth2Input').innerText=d.ccMonth2;
+      if(d.ccMonth3!==undefined)document.getElementById('ccMonth3Input').innerText=d.ccMonth3;
+      if(d.ccMonth4!==undefined)document.getElementById('ccMonth4Input').innerText=d.ccMonth4;
+      if(d.ccMonth5!==undefined)document.getElementById('ccMonth5Input').innerText=d.ccMonth5;
+      if(d.tabbyLimit!==undefined)document.getElementById('tabbyLimitInput').innerText=d.tabbyLimit;
+      if(d.tabbySplit!==undefined)document.getElementById('tabbySplitInput').innerText=d.tabbySplit;
+      if(d.splitMonth1!==undefined)document.getElementById('splitMonth1Input').innerText=d.splitMonth1;
+      if(d.splitMonth2!==undefined)document.getElementById('splitMonth2Input').innerText=d.splitMonth2;
+      if(d.splitMonth3!==undefined)document.getElementById('splitMonth3Input').innerText=d.splitMonth3;
+      if(d.splitMonth4!==undefined)document.getElementById('splitMonth4Input').innerText=d.splitMonth4;
+      if(d.splitMonth5!==undefined)document.getElementById('splitMonth5Input').innerText=d.splitMonth5;
+      if(d.investmentDownPayment!==undefined)document.getElementById('investmentDownPaymentInput').innerText=d.investmentDownPayment;
+      if(d.investmentInstallment!==undefined)document.getElementById('investmentInstallmentInput').innerText=d.investmentInstallment;
+      if(d.zakatCash!==undefined)document.getElementById('zakatCashInput').innerText=d.zakatCash;
+      if(d.zakatGoldGram!==undefined)document.getElementById('zakatGoldGramInput').innerText=d.zakatGoldGram;
+      if(d.zakatGoldPrice!==undefined)document.getElementById('zakatGoldPriceInput').innerText=d.zakatGoldPrice;
+      if(d.zakatBusiness!==undefined)document.getElementById('zakatBusinessInput').innerText=d.zakatBusiness;
+      if(d.zakatReceivables!==undefined)document.getElementById('zakatReceivablesInput').innerText=d.zakatReceivables;
+      if(d.zakatLiabilities!==undefined)document.getElementById('zakatLiabilitiesInput').innerText=d.zakatLiabilities;
+      if(d.zakatSilverPrice!==undefined)document.getElementById('zakatSilverPriceInput').innerText=d.zakatSilverPrice;
+    }catch(err){renderUaeTable(defUae);renderExpensesTable(defExp);}
+  }else{
+    renderUaeTable(defUae);
+    renderExpensesTable(defExp);
+  }
   calculateAll();
 };
+
 (function(){
   const map={snapUsable:'usableAmountResult',snapHold:'holdAmountResult',snapUae:'uaeTotalBDT',snapCc:'ccTotalResult',snapZakat:'zakatPayableResult',snapInvestment:'investmentTotalResult',snapExpenses:'expTotalResult'};
   function sync(){Object.keys(map).forEach(k=>{let s=document.getElementById(map[k]),d=document.getElementById(k);if(s&&d)d.textContent=s.textContent.trim();});}
