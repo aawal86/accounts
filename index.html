@@ -1,64 +1,550 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Abdul's Financial Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Reem+Kufi:wght@400;600;700&family=Sora:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Anek+Bangla:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root{--accent:#0b8f6c;--accent-2:#6b5bff;--amber:#d98a00;--bg-color:#eceee8;--card-bg:#ffffff;--card-2:#f6f7f3;--text-main:#0e1512;--text-muted:#5f6b64;--border-color:#dde2d8;--primary:#0b8f6c;--table-header:#f6f7f3;--radius:22px;--r-sm:12px;--shadow:0 1px 0 rgba(255,255,255,.8) inset,0 18px 40px -18px rgba(14,21,18,.18);--f-body:'Sora','Anek Bangla',system-ui,sans-serif;--f-mono:'IBM Plex Mono','Anek Bangla',ui-monospace,monospace;--f-arabic:'Reem Kufi','Amiri',serif;--ease:cubic-bezier(.2,.8,.2,1)}
+[data-theme="dark"]{--accent:#3ee6b0;--accent-2:#9a8cff;--amber:#ffb547;--bg-color:#060a09;--card-bg:#0f1614;--card-2:#131c19;--text-main:#e9f3ef;--text-muted:#86a095;--border-color:#1f2c28;--primary:#3ee6b0;--table-header:#131c19;--shadow:0 1px 0 rgba(255,255,255,.04) inset,0 24px 50px -24px rgba(0,0,0,.8)}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{font-family:var(--f-body);background:var(--bg-color);color:var(--text-main);line-height:1.6;font-size:14px;padding:10px 10px 120px;position:relative;overflow-x:hidden;transition:background .4s,color .4s}
+button,input{font-family:inherit}
+.aurora{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.aurora i{position:absolute;border-radius:50%;filter:blur(90px);opacity:.35}
+.aurora i:nth-child(1){width:460px;height:460px;background:var(--accent);top:-180px;left:-120px;animation:drift 22s ease-in-out infinite}
+.aurora i:nth-child(2){width:420px;height:420px;background:var(--accent-2);top:20%;right:-180px;animation:drift 26s ease-in-out infinite reverse}
+[data-theme="dark"] .aurora i{opacity:.16}
+@keyframes drift{0%,100%{transform:translate(0,0)}50%{transform:translate(50px,40px)}}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.container{position:relative;z-index:1;width:100%;max-width:640px;margin:0 auto}
+@media(min-width:900px){body{padding:18px 24px 130px}.container{max-width:1120px}}
+
+/* Modern Stylish Bismillah Banner */
+.bismillah-banner{position:relative;overflow:hidden;text-align:center;padding:18px 20px;margin-bottom:14px;border-radius:var(--radius);background:var(--card-bg);border:1px solid var(--border-color);box-shadow:var(--shadow);animation:rise .5s var(--ease) both}
+.bismillah-banner::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 8%,transparent),color-mix(in srgb,var(--accent-2) 6%,transparent));pointer-events:none}
+.bismillah-arabic{font-family:var(--f-arabic);font-size:clamp(22px,4.5vw,30px);font-weight:700;letter-spacing:.02em;background:linear-gradient(135deg,var(--accent),var(--accent-2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px;line-height:1.3}
+.bismillah-meaning{font-size:11.5px;color:var(--text-muted);font-weight:600;letter-spacing:.01em}
+
+.print-header{display:none;text-align:center;margin-bottom:20px;border-bottom:2px solid #000;padding-bottom:10px}
+.print-header h1{font-size:20px;font-weight:700;margin-bottom:4px}
+.print-header .print-timestamp{font-size:12px;color:#444}
+.navbar{position:sticky;top:8px;z-index:1000;display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;padding:9px 10px 9px 14px;border-radius:99px;border:1px solid var(--border-color);background:color-mix(in srgb,var(--card-bg) 78%,transparent);backdrop-filter:blur(16px) saturate(160%);box-shadow:var(--shadow);animation:rise .6s var(--ease) both}
+.nav-brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:14px;letter-spacing:-.01em}
+.nav-brand .logo{width:30px;height:30px;border-radius:10px;display:grid;place-items:center;font-size:13px;color:#04120d;background:linear-gradient(135deg,var(--accent),var(--accent-2));transform:rotate(-6deg)}
+.nav-controls{display:flex;gap:6px;align-items:center}
+.nav-btn{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;cursor:pointer;font-size:14px;background:var(--card-2);border:1px solid var(--border-color);color:var(--text-main);transition:transform .2s var(--ease),background .2s,border-color .2s}
+.nav-btn:hover{border-color:var(--accent);transform:translateY(-2px)}
+.hero{position:relative;overflow:hidden;border-radius:30px;padding:26px 20px 20px;margin-bottom:14px;color:#eaf5f0;background:linear-gradient(140deg,#07110e 0%,#0c1a2c 60%,#171233 100%);animation:rise .7s .05s var(--ease) both;box-shadow:0 30px 60px -30px rgba(7,17,14,.7)}
+.hero::before{content:"";position:absolute;width:420px;height:420px;border-radius:50%;right:-140px;top:-200px;background:radial-gradient(circle,rgba(62,230,176,.55),transparent 65%)}
+.kicker{display:inline-flex;align-items:center;gap:8px;font:500 11px var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:#8fe9c8;padding:6px 12px;border:1px solid rgba(143,233,200,.3);border-radius:99px;background:rgba(62,230,176,.08)}
+.kicker .dot{width:7px;height:7px;border-radius:50%;background:#3ee6b0;animation:blink 1.8s infinite}
+.hero h1{font-size:clamp(28px,6vw,52px);font-weight:800;line-height:1.05;letter-spacing:-.035em;margin:16px 0 22px}
+.hero h1 span{background:linear-gradient(90deg,#3ee6b0,#9a8cff);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.snap-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.snap{padding:14px 14px 12px;border-radius:18px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(8px);min-width:0;transition:transform .3s var(--ease),background .3s}
+.snap small{display:flex;align-items:center;gap:7px;font-size:10.5px;color:#9fb8ae;font-weight:600;letter-spacing:.04em}
+.snap small i{color:#3ee6b0;font-size:11px}
+.snap b{display:block;margin-top:6px;font:600 clamp(15px,3.6vw,22px) var(--f-mono);letter-spacing:-.03em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.snap.main{grid-column:1/-1;background:linear-gradient(135deg,rgba(62,230,176,.22),rgba(154,140,255,.18));border-color:rgba(62,230,176,.35)}
+.snap.main b{font-size:clamp(26px,7vw,44px);color:#fff}
+@media(min-width:900px){.hero{padding:40px 40px 30px}.snap-grid{grid-template-columns:1.4fr repeat(6,1fr)}.snap.main{grid-column:auto}}
+.widgets-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+@media(min-width:900px){.widgets-grid{grid-template-columns:1fr 1fr 2fr;gap:14px}.calendar-weather-row{grid-column:span 1!important;display:contents!important}}
+.widget-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:var(--radius);padding:15px;box-shadow:var(--shadow);overflow:hidden;position:relative;animation:rise .6s var(--ease) both;transition:transform .3s var(--ease),border-color .3s}
+.widget-header{display:flex;align-items:center;gap:7px;font:600 10.5px var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px}
+.widget-header i{color:var(--accent);font-size:12px}
+.widget-content{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#liveTime{font:600 clamp(18px,4.6vw,24px) var(--f-mono);letter-spacing:-.04em}
+.calendar-weather-row{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.daily-calendar{display:flex;align-items:center;gap:12px}
+.cal-badge{flex:none;width:54px;border-radius:14px;overflow:hidden;text-align:center;border:1px solid var(--border-color);background:var(--card-2)}
+.cal-badge-month{display:block;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#04120d;font:700 9.5px var(--f-mono);letter-spacing:.14em;text-transform:uppercase;padding:3px 0}
+.cal-badge-day{display:block;font:800 24px var(--f-body);line-height:1.25;letter-spacing:-.04em}
+.cal-info{min-width:0}
+.cal-weekday{font-weight:800;font-size:15px;letter-spacing:-.02em}
+.cal-full-date{font-size:11px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.weather-widget{display:flex;align-items:center;gap:12px}
+.weather-icon-box{flex:none;width:50px;height:50px;border-radius:16px;display:grid;place-items:center;font-size:22px;background:rgba(245,158,11,.12)}
+.weather-temp{font:600 24px var(--f-mono);letter-spacing:-.05em;line-height:1.1}
+.weather-condition{font-size:11.5px;color:var(--text-muted);font-weight:500}
+.sections{display:block}
+@media(min-width:900px){.sections{column-count:2;column-gap:18px}}
+.section-card{break-inside:avoid;background:var(--card-bg);border:1px solid var(--border-color);border-radius:var(--radius);padding:16px;margin-bottom:14px;box-shadow:var(--shadow)}
+@media(min-width:900px){.section-card{margin-bottom:18px;padding:20px}}
+.table-header-wrap{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}
+h2{display:flex;align-items:center;gap:11px;font-size:16px;font-weight:800;letter-spacing:-.02em}
+h2 i{flex:none;width:34px;height:34px;border-radius:11px;display:grid;place-items:center;font-size:14px;color:#04120d;background:linear-gradient(135deg,var(--accent),var(--accent-2))}
+.table-responsive{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:16px;border:1px solid var(--border-color);background:var(--card-bg)}
+table{width:100%;border-collapse:collapse;table-layout:fixed}
+th,td{padding:11px 10px;font-size:12.5px;overflow-wrap:anywhere}
+th{background:var(--table-header);color:var(--text-muted);font:600 10px var(--f-mono);letter-spacing:.14em;text-transform:uppercase;border-bottom:1px solid var(--border-color)}
+td{border-bottom:1px solid var(--border-color);transition:background .2s}
+tr:last-child td{border-bottom:none}
+th:nth-child(1),td:nth-child(1){width:62%;text-align:left}
+th:nth-child(2),td:nth-child(2){width:38%;text-align:right}
+.dynamic-table th:nth-child(1),.dynamic-table td:nth-child(1){width:46%;text-align:left}
+.dynamic-table th:nth-child(2),.dynamic-table td:nth-child(2){width:16%;text-align:center}
+.dynamic-table th:nth-child(3),.dynamic-table td:nth-child(3){width:38%;text-align:right}
+td:last-child{font-family:var(--f-mono);font-weight:600;letter-spacing:-.02em}
+td[contenteditable="true"],.editable-label,.uae-val,.exp-val,.cc-val,.split-val{cursor:text;outline:none;transition:background .2s,box-shadow .2s}
+td[contenteditable="true"]{color:var(--accent);background:color-mix(in srgb,var(--accent) 7%,transparent);box-shadow:inset 0 -2px 0 color-mix(in srgb,var(--accent) 35%,transparent)}
+.editable-label,.uae-val,.exp-val,.cc-val,.split-val{display:inline-block;padding:3px 8px;border-radius:8px;min-width:50%}
+.editable-label{width:100%;font-family:var(--f-body)}
+.uae-val,.exp-val,.cc-val,.split-val{color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,transparent);font-family:var(--f-mono);font-weight:600;min-width:80px;text-align:right}
+.calculated-row{background:linear-gradient(90deg,color-mix(in srgb,var(--accent) 14%,transparent),color-mix(in srgb,var(--accent-2) 8%,transparent))!important;font-weight:700}
+.calculated-row td:first-child{box-shadow:inset 4px 0 0 var(--accent)}
+.calculated-row td:last-child{color:var(--accent);font-size:13.5px}
+.locked-row{background:var(--card-2)!important;color:var(--text-muted);font-weight:600}
+.section-header-row{background:var(--card-2)!important;text-align:center!important;font:700 10.5px var(--f-mono)!important;letter-spacing:.2em;text-transform:uppercase;color:var(--accent-2)!important}
+.section-header-row td{text-align:center!important;width:auto!important;font-family:var(--f-mono)!important;color:inherit!important}
+.add-row-btn{display:inline-flex;align-items:center;gap:7px;cursor:pointer;white-space:nowrap;padding:8px 14px;border-radius:99px;border:1px solid var(--accent);background:transparent;color:var(--accent);font-size:11.5px;font-weight:700;transition:all .25s var(--ease)}
+.add-row-btn:hover{background:var(--accent);color:#04120d;transform:translateY(-2px)}
+.delete-row-btn{width:28px;height:28px;border-radius:9px;cursor:pointer;border:1px solid var(--border-color);background:transparent;color:var(--text-muted);font-size:11px;transition:all .2s}
+.delete-row-btn:hover{background:#ff4d4f;border-color:#ff4d4f;color:#fff;transform:rotate(-8deg)}
+.action-bar{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:1100;width:min(94vw,520px);display:flex;gap:8px;align-items:center;padding:8px;border-radius:99px;background:color-mix(in srgb,var(--card-bg) 80%,transparent);backdrop-filter:blur(18px) saturate(170%);border:1px solid var(--border-color);box-shadow:0 20px 50px -15px rgba(0,0,0,.4)}
+.btn{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:13px 14px;border:none;border-radius:99px;cursor:pointer;font-size:13px;font-weight:700;color:#04120d;background:linear-gradient(135deg,var(--accent),#b6f27a);box-shadow:0 8px 20px -8px var(--accent);transition:transform .2s var(--ease)}
+.btn:hover{transform:translateY(-2px)}
+.btn-secondary{background:var(--card-2);color:var(--text-main);border:1px solid var(--border-color);box-shadow:none}
+#success-msg{display:none;position:absolute;bottom:calc(100% + 10px);left:50%;transform:translateX(-50%);white-space:nowrap;padding:9px 16px;border-radius:99px;background:var(--accent);color:#04120d;font-size:12px;font-weight:700;box-shadow:0 10px 30px -10px var(--accent)}
+.footer{margin:26px 0 10px;padding:22px 18px;text-align:center;border-top:1px dashed var(--border-color)}
+.footer-disclaimer{font-size:11.5px;color:var(--text-muted);line-height:1.8;max-width:620px;margin:0 auto 10px}
+.footer-copyright{font:500 11px var(--f-mono);letter-spacing:.06em;color:var(--text-main)}
+.ri{display:inline-grid;place-items:center;width:24px;height:24px;margin-right:9px;border-radius:8px;vertical-align:middle;flex:none;font-size:10.5px;color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent);transition:transform .3s var(--ease),background .3s,color .3s}
+tr:hover .ri{transform:scale(1.12) rotate(-6deg);background:var(--accent);color:#04120d}
+@media print{body{background:#fff!important;color:#000!important;padding:0!important}.container{max-width:100%!important;margin:0!important;padding:0!important}.navbar,.widgets-grid,.action-bar,.footer,.add-row-btn,.delete-row-btn,#jsonFileInput{display:none!important}.print-header{display:block!important}#uaeSectionCard{page-break-before:always}.section-card{border:none!important;box-shadow:none!important;padding:0!important;margin-bottom:15px!important}table{width:100%!important;border-collapse:collapse!important}th,td{padding:6px 10px!important;border:1px solid #94a3b8!important;color:#000!important}th{background-color:#f1f5f9!important}.hero,.aurora{display:none!important}}
+</style>
+</head>
+<body>
+<div class="aurora" aria-hidden="true"><i></i><i></i></div>
+<div class="container">
+    <div class="bismillah-banner">
+        <div class="bismillah-arabic">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+        <div class="bismillah-meaning">(পরম করুণাময় ও অসীম দয়ালু আল্লাহর নামে শুরু করছি)</div>
+    </div>
+    <div class="print-header"><h1>আবদুল আউয়াল এর ব্যক্তিগত হিসেব</h1><div class="print-timestamp" id="printTimestamp"></div></div>
+    <nav class="navbar">
+        <div class="nav-brand"><span class="logo"><i class="fas fa-wallet"></i></span>Abdul's Dashboard</div>
+        <div class="nav-controls">
+            <button class="nav-btn" onclick="exportToJSON()" title="Backup"><i class="fas fa-cloud-arrow-down"></i></button>
+            <button class="nav-btn" onclick="document.getElementById('jsonFileInput').click()" title="Restore"><i class="fas fa-cloud-arrow-up"></i></button>
+            <input type="file" id="jsonFileInput" accept=".json" style="display: none;" onchange="importFromJSON(event)">
+            <button class="nav-btn" onclick="toggleTheme()" id="themeBtn">🌙</button>
+            <button class="nav-btn" onclick="handlePrint()" title="Print"><i class="fas fa-print"></i></button>
+        </div>
+    </nav>
+    <header class="hero">
+        <span class="kicker"><span class="dot"></span>Personal ledger</span>
+        <h1>Abdul's <span>Financial</span> Dashboard</h1>
+        <div class="snap-grid">
+            <div class="snap main"><small><i class="fas fa-wallet"></i>Usable Amount</small><b id="snapUsable">0.00</b></div>
+            <div class="snap"><small><i class="fas fa-lock"></i>Hold Amount</small><b id="snapHold">0.00</b></div>
+            <div class="snap"><small><i class="fas fa-building-columns"></i>UAE in BDT</small><b id="snapUae">0.00</b></div>
+            <div class="snap"><small><i class="fas fa-credit-card"></i>Card Outstanding</small><b id="snapCc">0.00</b></div>
+            <div class="snap"><small><i class="fas fa-moon"></i>Zakat Payable</small><b id="snapZakat">0.00</b></div>
+            <div class="snap"><small><i class="fas fa-chart-pie"></i>Investment</small><b id="snapInvestment">0.00</b></div>
+            <div class="snap"><small><i class="fas fa-receipt"></i>Monthly Expenses</small><b id="snapExpenses">0.00</b></div>
+        </div>
+    </header>
+    <div class="widgets-grid">
+        <div class="widget-card"><div class="widget-header"><i class="fas fa-clock"></i> Live Time</div><div class="widget-content" id="liveTime">--:--:--</div></div>
+        <div class="widget-card"><div class="widget-header"><i class="fas fa-location-dot"></i> Location</div><div class="widget-content" id="locationText">Detecting...</div></div>
+        <div class="calendar-weather-row">
+            <div class="widget-card"><div class="widget-header"><i class="fas fa-calendar-days"></i> Calendar</div><div class="daily-calendar"><div class="cal-badge"><span class="cal-badge-month" id="calMonthName">---</span><span class="cal-badge-day" id="calDayNum">--</span></div><div class="cal-info"><div class="cal-weekday" id="calWeekdayName">---</div><div class="cal-full-date" id="calFullDateText">---</div></div></div></div>
+            <div class="widget-card"><div class="widget-header"><i class="fas fa-cloud-sun"></i> Weather</div><div class="weather-widget"><div class="weather-icon-box" id="weatherIconBox"><i class="fas fa-sun" id="weatherIcon"></i></div><div class="weather-info"><div class="weather-temp" id="weatherTemp">--°C</div><div class="weather-condition" id="weatherCondition">Loading...</div></div></div></div>
+        </div>
+    </div>
+    <div class="sections">
         <div class="section-card">
-            <div class="table-header-wrap">
-                <h2><i class="fas fa-credit-card"></i>Credit Card Accounts</h2>
-                <button class="add-row-btn" onclick="addCcRow()"><i class="fas fa-plus"></i> Add Card / Month</button>
-            </div>
+            <div class="table-header-wrap"><h2><i class="fas fa-right-left"></i>Currency Converter</h2></div>
             <div class="table-responsive">
-                <table id="tableCreditCard" class="dynamic-table">
-                    <thead>
-                        <tr>
-                            <th>Monthly Outstanding Payment</th>
-                            <th style="text-align: center;">Action</th>
-                            <th style="text-align: right;">Value</th>
-                        </tr>
-                    </thead>
-                    <tbody id="ccTbody">
-                        <!-- Default rows will be loaded dynamically -->
-                    </tbody>
-                    <tfoot>
-                        <tr class="calculated-row">
-                            <td colspan="2">Total Credit Card Outstanding</td>
-                            <td id="ccTotalResult" style="text-align: right;">0.00</td>
-                        </tr>
-                        <tr class="section-header-row"><td colspan="3">Tabby Credit Card Status</td></tr>
-                        <tr>
-                            <td colspan="2">Credit Limit</td>
-                            <td contenteditable="true" id="tabbyLimitInput" style="text-align: right;" oninput="calculateAll()">0.00</td>
-                        </tr>
-                        <tr class="calculated-row">
-                            <td colspan="2">Credit Balance</td>
-                            <td id="tabbyBalanceResult" style="text-align: right;">0.00</td>
-                        </tr>
-                        <tr class="calculated-row">
-                            <td colspan="2">Credit Used</td>
-                            <td id="tabbyUsedResult" style="text-align: right;">0.00</td>
-                        </tr>
-                        <tr class="locked-row">
-                            <td colspan="2">Outstanding</td>
-                            <td id="tabbyOutstandingResult" style="text-align: right;">0.00</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">Split Charge</td>
-                            <td contenteditable="true" id="tabbySplitInput" style="text-align: right;" oninput="calculateAll()">0.00</td>
-                        </tr>
-                        <tr class="section-header-row"><td colspan="3">Monthly Split Purchase Status</td></tr>
-                    </tfoot>
+                <table id="tableCurrency">
+                    <tr><th>Description</th><th style="text-align: right;">Value</th></tr>
+                    <tr><td>Rate</td><td contenteditable="true" id="rateInput" style="text-align: right;" oninput="calculateAll()">33.43</td></tr>
+                    <tr class="locked-row"><td>Rate x 2.5% Incentive Result</td><td id="incentiveResult" style="text-align: right;">0.00</td></tr>
+                    <tr><td>AED Amount</td><td contenteditable="true" id="aedAmountInput" style="text-align: right;" oninput="calculateAll()">1000.00</td></tr>
+                    <tr class="calculated-row"><td>Final Converted Result</td><td id="finalResult" style="text-align: right;">0.00</td></tr>
                 </table>
-                <table id="tableSplit" class="dynamic-table" style="margin-top: 10px;">
-                    <tbody id="splitTbody">
-                        <!-- Default split rows will be loaded dynamically -->
-                    </tbody>
+            </div>
+        </div>
+        <div class="section-card">
+            <div class="table-header-wrap"><h2><i class="fas fa-chart-pie"></i>Invesment</h2></div>
+            <div class="table-responsive">
+                <table id="tableInvestment">
+                    <tr><th>Description</th><th style="text-align: right;">Value</th></tr>
+                    <tr><td>Down Payment</td><td contenteditable="true" id="investmentDownPaymentInput" style="text-align: right;" oninput="calculateAll()">0.00</td></tr>
+                    <tr><td>Monthly Installment</td><td contenteditable="true" id="investmentInstallmentInput" style="text-align: right;" oninput="calculateAll()">0.00</td></tr>
+                    <tr class="calculated-row"><td>Total</td><td id="investmentTotalResult" style="text-align: right;">0.00</td></tr>
+                </table>
+            </div>
+        </div>
+        <div class="section-card" id="uaeSectionCard">
+            <div class="table-header-wrap"><h2><i class="fas fa-building-columns"></i>UAE Accounts</h2><button class="add-row-btn" onclick="addUaeRow()"><i class="fas fa-plus"></i> Add Account</button></div>
+            <div class="table-responsive">
+                <table id="tableUAE" class="dynamic-table">
+                    <thead><tr><th>Description</th><th style="text-align: center;">Action</th><th style="text-align: right;">Value</th></tr></thead>
+                    <tbody id="uaeTbody"></tbody>
                     <tfoot>
-                        <tr class="calculated-row">
-                            <td style="width: 46%;">Total Split Amount</td>
-                            <td style="width: 16%; text-align: center;"></td>
-                            <td style="width: 38%; text-align: right;" id="splitTotalResult">0.00</td>
-                        </tr>
-                        <tr class="calculated-row">
-                            <td colspan="2">Upcoming Payment</td>
-                            <td id="upcomingPaymentResult" style="text-align: right;">0.00</td>
-                        </tr>
+                        <tr class="locked-row"><td colspan="2">Current Month Salary</td><td id="salaryResult" style="text-align: right;">0.00</td></tr>
+                        <tr><td colspan="2">Absent Days</td><td contenteditable="true" id="absentDaysInput" style="text-align: right;" oninput="calculateAll()">0</td></tr>
+                        <tr><td colspan="2">Over Time</td><td contenteditable="true" id="otDaysInput" style="text-align: right;" oninput="calculateAll()">0</td></tr>
+                        <tr class="locked-row"><td colspan="2">Over Time Total Amount</td><td id="otResult" style="text-align: right;">0.00</td></tr>
+                        <tr class="calculated-row"><td colspan="2">Salary & OT Total</td><td id="salaryOtTotalResult" style="text-align: right;">0.00</td></tr>
+                        <tr class="calculated-row"><td colspan="2">Total AED</td><td id="uaeTotalAED" style="text-align: right;">0.00</td></tr>
+                        <tr class="calculated-row"><td colspan="2">Total Converted in BDT</td><td id="uaeTotalBDT" style="text-align: right;">0.00</td></tr>
                     </tfoot>
                 </table>
             </div>
         </div>
+        <div class="section-card">
+            <div class="table-header-wrap"><h2><i class="fas fa-landmark"></i>BD Accounts</h2></div>
+            <div class="table-responsive">
+                <table id="tableBD">
+                    <tr><th>Description</th><th style="text-align: right;">Value</th></tr>
+                    <tr><td>MTB Savings</td><td contenteditable="true" id="mtbSavingsInput" style="text-align: right;" oninput="calculateAll()">0.00</td></tr>
+                    <tr><td>MTB NRB</td><td contenteditable="true" id="mtbNrbInput" style="text-align: right;" oninput="calculateAll()">0.00</td></tr>
+                    <tr><td>BRAC Provashi</td><td contenteditable="true" id="bracProvashiInput" style="text-align: right;" oninput="calculateAll()">0.00</td></tr>
+                    <tr><td>DBBL Agent</td><td contenteditable="true" id="dbblAgentInput" style="text-align: right;" oninput="calculateAll()">0.00</td></tr>
+                    <tr><td>UCBL Islamic</td><td contenteditable="true" id="ucblIslamicInput" style="text-align: right;" oninput="calculateAll()">0.00</td></tr>
+                    <tr class="calculated-row"><td>Usable Amount</td><td id="usableAmountResult" style="text-align: right;">0.00</td></tr>
+                    <tr><td>DBBL Core</td><td contenteditable="true" id="dbblCoreInput" style="text-align: right;" oninput="calculateAll()">0.00</td></tr>
+                    <tr><td>Pubali Islamic</td><td contenteditable="true" id="pubaliIslamicInput" style="text-align: right;" oninput="calculateAll()">0.00</td></tr>
+                    <tr><td>IBBL Savings</td><td contenteditable="true" id="ibblSavingsInput" style="text-align: right;" oninput="calculateAll()">0.00</td></tr>
+                    <tr class="locked-row"><td>Hold Amount</td><td id="holdAmountResult" style="text-align: right;">0.00</td></tr>
+                </table>
+            </div>
+        </div>
+        <div class="section-card">
+            <div class="table-header-wrap">
+                <h2><i class="fas fa-credit-card"></i>Credit Card Accounts</h2>
+                <button class="add-row-btn" onclick="addCcRow()"><i class="fas fa-plus"></i> Add Row</button>
+            </div>
+            <div class="table-responsive">
+                <table id="tableCreditCard" class="dynamic-table">
+                    <thead><tr><th>Monthly Outstanding Payment</th><th style="text-align: center;">Action</th><th style="text-align: right;">Value</th></tr></thead>
+                    <tbody id="ccTbody"></tbody>
+                    <tfoot>
+                        <tr class="calculated-row"><td colspan="2">Total Credit Card Outstanding</td><td id="ccTotalResult" style="text-align: right;">0.00</td></tr>
+                        <tr class="section-header-row"><td colspan="3">Tabby Credit Card Status</td></tr>
+                        <tr><td colspan="2">Credit Limit</td><td contenteditable="true" id="tabbyLimitInput" style="text-align: right;" oninput="calculateAll()">0.00</td></tr>
+                        <tr class="calculated-row"><td colspan="2">Credit Balance</td><td id="tabbyBalanceResult" style="text-align: right;">0.00</td></tr>
+                        <tr class="calculated-row"><td colspan="2">Credit Used</td><td id="tabbyUsedResult" style="text-align: right;">0.00</td></tr>
+                        <tr class="locked-row"><td colspan="2">Outstanding</td><td id="tabbyOutstandingResult" style="text-align: right;">0.00</td></tr>
+                        <tr><td colspan="2">Split Charge</td><td contenteditable="true" id="tabbySplitInput" style="text-align: right;" oninput="calculateAll()">0.00</td></tr>
+                        <tr class="section-header-row"><td colspan="3">Monthly Split Purchase Status</td></tr>
+                    </tfoot>
+                </table>
+                <table id="tableSplit" class="dynamic-table" style="margin-top: 10px;">
+                    <tbody id="splitTbody"></tbody>
+                    <tfoot>
+                        <tr class="calculated-row"><td style="width: 46%;">Total Split Amount</td><td style="width: 16%; text-align: center;"></td><td style="width: 38%; text-align: right;" id="splitTotalResult">0.00</td></tr>
+                        <tr class="calculated-row"><td colspan="2">Upcoming Payment</td><td id="upcomingPaymentResult" style="text-align: right;">0.00</td></tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+        <div class="section-card">
+            <div class="table-header-wrap"><h2><i class="fas fa-receipt"></i>Monthly Expenses Planing</h2><button class="add-row-btn" onclick="addExpenseRow()"><i class="fas fa-plus"></i> Add Expense</button></div>
+            <div class="table-responsive">
+                <table id="tableExpenses" class="dynamic-table">
+                    <thead><tr><th>Description</th><th style="text-align: center;">Action</th><th style="text-align: right;">Value</th></tr></thead>
+                    <tbody id="expensesTbody"></tbody>
+                    <tfoot>
+                        <tr class="calculated-row"><td colspan="2">Total</td><td id="expTotalResult" style="text-align: right;">0.00</td></tr>
+                        <tr class="calculated-row"><td colspan="2">In AED</td><td id="expInAedResult" style="text-align: right;">0.00</td></tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+        <div class="section-card">
+            <div class="table-header-wrap"><h2><i class="fas fa-moon"></i>Zakat Calculator</h2></div>
+            <div class="table-responsive">
+                <table id="tableZakat">
+                    <tr><th>Description</th><th style="text-align: right;">Value</th></tr>
+                    <tr><td>Total Cash & Bank Balances</td><td contenteditable="true" id="zakatCashInput" style="text-align: right;" oninput="calculateAll()">0.00</td></tr>
+                    <tr class="section-header-row"><td colspan="2">Gold Value Calculation</td></tr>
+                    <tr><td>Gold Gram (Weight)</td><td contenteditable="true" id="zakatGoldGramInput" style="text-align: right;" oninput="calculateAll()">0.00</td></tr>
+                    <tr><td>Current Market Price (Per Gram)</td><td contenteditable="true" id="zakatGoldPriceInput" style="text-align: right;" oninput="calculateAll()">0.00</td></tr>
+                    <tr class="calculated-row"><td>Gold Value</td><td id="zakatGoldValueResult" style="text-align: right;">0.00</td></tr>
+                    <tr class="section-header-row"><td colspan="2">Other Assets & Liabilities</td></tr>
+                    <tr><td>Business Assets & Investments</td><td contenteditable="true" id="zakatBusinessInput" style="text-align: right;" oninput="calculateAll()">0.00</td></tr>
+                    <tr><td>Lent Money / Receivables</td><td contenteditable="true" id="zakatReceivablesInput" style="text-align: right;" oninput="calculateAll()">0.00</td></tr>
+                    <tr class="calculated-row"><td>Total Assets</td><td id="zakatTotalAssets" style="text-align: right;">0.00</td></tr>
+                    <tr><td>Deductions (Debts)</td><td contenteditable="true" id="zakatLiabilitiesInput" style="text-align: right;" oninput="calculateAll()">0.00</td></tr>
+                    <tr class="calculated-row"><td>Net Zakatable Wealth</td><td id="zakatNetWealth" style="text-align: right;">0.00</td></tr>
+                    <tr class="locked-row"><td>Nisab Silver Standard Weight</td><td id="zakatSilverWeight" style="text-align: right;">612.36 grams</td></tr>
+                    <tr><td>Current Silver Price (Per Gram)</td><td contenteditable="true" id="zakatSilverPriceInput" style="text-align: right;" oninput="calculateAll()">0.00</td></tr>
+                    <tr class="calculated-row"><td>Nisab Threshold</td><td id="zakatNisabThreshold" style="text-align: right;">0.00</td></tr>
+                    <tr class="locked-row"><td>Nisab Status</td><td id="zakatNisabStatus" style="text-align: right;">Not Eligible</td></tr>
+                    <tr class="calculated-row"><td>Total Zakat Payable (2.5%)</td><td id="zakatPayableResult" style="text-align: right;">0.00</td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="action-bar">
+        <button class="btn" onclick="saveData()"><i class="fas fa-floppy-disk"></i> Save changes</button>
+        <span id="success-msg"><i class="fas fa-circle-check"></i> Saved successfully</span>
+        <button class="btn btn-secondary" onclick="calculateAll()"><i class="fas fa-rotate"></i> Recalculate</button>
+    </div>
+    <footer class="footer">
+        <div class="footer-disclaimer"><i class="ri fas fa-shield-halved" style="margin-right:8px"></i>ডিসক্লাইমার: ইহা আবদুল আউয়াল এর একান্ত নিজস্ব হিসেব নিকেশের খাতা।</div>
+        <div class="footer-copyright">&copy; <span id="footerYear"></span> Abdul Awal. All Rights Reserved.</div>
+    </footer>
+</div>
+<script>
+let defUae=[{name:"HSBC",val:"0.00"},{name:"HSBC GMA",val:"0.00"},{name:"Ruya",val:"0.00"},{name:"Payit",val:"0.00"},{name:"Botim",val:"0.00"},{name:"Tabby Debit",val:"0.00"}];
+let defExp=[{name:"For Mother",val:"0.00"},{name:"For House Rent",val:"0.00"},{name:"For WiFi Bill",val:"0.00"},{name:"For Gas Cylinder",val:"0.00"},{name:"For Dust Bill",val:"0.00"},{name:"For Madrasha Fee's",val:"0.00"},{name:"For Tutor Fee's",val:"0.00"},{name:"For Electric Bill",val:"0.00"},{name:"For Food & Others",val:"0.00"}];
+let defCc=[{name:"Next Month",val:"0.00"},{name:"Next Next Month",val:"0.00"},{name:"Next Next Next Month",val:"0.00"},{name:"Next Next Next Next Month",val:"0.00"},{name:"Next Next Next Next Next Month",val:"0.00"}];
+let defSplit=[{name:"Next Month",val:"0.00"},{name:"Next Next Month",val:"0.00"},{name:"Next Next Next Month",val:"0.00"},{name:"Next Next Next Next Month",val:"0.00"},{name:"Next Next Next Next Next Month",val:"0.00"}];
+
+function renderUaeTable(accs){let tb=document.getElementById('uaeTbody');tb.innerHTML='';accs.forEach((a,i)=>{tb.innerHTML+=`<tr><td><span contenteditable="true" class="editable-label" oninput="calculateAll()">${a.name}</span></td><td style="text-align: center;"><button class="delete-row-btn" onclick="deleteUaeRow(this)" title="Delete"><i class="fas fa-trash"></i></button></td><td style="text-align: right;"><span contenteditable="true" class="uae-val" id="uaeVal_${i}" oninput="calculateAll()">${a.val}</span></td></tr>`;});}
+function addUaeRow(){let tb=document.getElementById('uaeTbody');tb.innerHTML+=`<tr><td><span contenteditable="true" class="editable-label" oninput="calculateAll()">New Account</span></td><td style="text-align: center;"><button class="delete-row-btn" onclick="deleteUaeRow(this)" title="Delete"><i class="fas fa-trash"></i></button></td><td style="text-align: right;"><span contenteditable="true" class="uae-val" oninput="calculateAll()">0.00</span></td></tr>`;calculateAll();}
+function deleteUaeRow(b){b.closest('tr').remove();calculateAll();}
+
+function renderExpensesTable(exps){let tb=document.getElementById('expensesTbody');tb.innerHTML='';exps.forEach((e,i)=>{tb.innerHTML+=`<tr><td><span contenteditable="true" class="editable-label" oninput="calculateAll()">${e.name}</span></td><td style="text-align: center;"><button class="delete-row-btn" onclick="deleteExpenseRow(this)" title="Delete"><i class="fas fa-trash"></i></button></td><td style="text-align: right;"><span contenteditable="true" class="exp-val" id="expVal_${i}" oninput="calculateAll()">${e.val}</span></td></tr>`;});}
+function addExpenseRow(){let tb=document.getElementById('expensesTbody');tb.innerHTML+=`<tr><td><span contenteditable="true" class="editable-label" oninput="calculateAll()">New Expense</span></td><td style="text-align: center;"><button class="delete-row-btn" onclick="deleteExpenseRow(this)" title="Delete"><i class="fas fa-trash"></i></button></td><td style="text-align: right;"><span contenteditable="true" class="exp-val" oninput="calculateAll()">0.00</span></td></tr>`;calculateAll();}
+function deleteExpenseRow(b){b.closest('tr').remove();calculateAll();}
+
+function renderCcTable(data){let tb=document.getElementById('ccTbody');tb.innerHTML='';data.forEach((item,i)=>{tb.innerHTML+=`<tr><td><span contenteditable="true" class="editable-label" oninput="calculateAll()">${item.name}</span></td><td style="text-align: center;"><button class="delete-row-btn" onclick="deleteCcRow(this)" title="Delete"><i class="fas fa-trash"></i></button></td><td style="text-align: right;"><span contenteditable="true" class="cc-val" id="ccVal_${i}" oninput="calculateAll()">${item.val}</span></td></tr>`;});}
+function addCcRow(){let tb=document.getElementById('ccTbody');tb.innerHTML+=`<tr><td><span contenteditable="true" class="editable-label" oninput="calculateAll()">New Month</span></td><td style="text-align: center;"><button class="delete-row-btn" onclick="deleteCcRow(this)" title="Delete"><i class="fas fa-trash"></i></button></td><td style="text-align: right;"><span contenteditable="true" class="cc-val" oninput="calculateAll()">0.00</span></td></tr>`;calculateAll();}
+function deleteCcRow(b){b.closest('tr').remove();calculateAll();}
+
+function renderSplitTable(data){let tb=document.getElementById('splitTbody');tb.innerHTML='';data.forEach((item,i)=>{tb.innerHTML+=`<tr><td style="width: 46%;"><span contenteditable="true" class="editable-label" oninput="calculateAll()">${item.name}</span></td><td style="width: 16%; text-align: center;"><button class="delete-row-btn" onclick="deleteSplitRow(this)" title="Delete"><i class="fas fa-trash"></i></button></td><td style="width: 38%; text-align: right;"><span contenteditable="true" class="split-val" id="splitVal_${i}" oninput="calculateAll()">${item.val}</span></td></tr>`;});}
+function deleteSplitRow(b){b.closest('tr').remove();calculateAll();}
+
+function updateDateTime(){let n=new Date();document.getElementById('liveTime').innerText=n.toLocaleTimeString();document.getElementById('footerYear').innerText=n.getFullYear();}
+setInterval(updateDateTime,1000);updateDateTime();
+
+async function initUserLocationAndWidgets(){try{let res=await fetch('https://ipapi.co/json/');let d=await res.json();if(d&&d.city){document.getElementById('locationText').innerText=`${d.city}, ${d.country_name||d.country}`;fetchWeather(d.latitude,d.longitude);}else{throw new Error();}}catch(e){document.getElementById('locationText').innerText="Dubai, UAE";fetchWeather(25.2048,55.2708);}}
+async function fetchWeather(lat,lon){try{let res=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code`);let d=await res.json();if(d&&d.current){document.getElementById('weatherTemp').innerText=`${Math.round(d.current.temperature_2m)}°C`;document.getElementById('weatherCondition').innerText="Clear Sky";}}catch(e){document.getElementById('weatherCondition').innerText="Weather unavailable";}}
+initUserLocationAndWidgets();
+
+function handlePrint(){let n=new Date();document.getElementById('printTimestamp').innerText=`তারিখ ও সময়: ${n.toLocaleString('bn-BD')}`;window.print();}
+function getCalendarData(){let n=new Date(),y=n.getFullYear(),m=n.getMonth(),t=n.getDate(),tot=new Date(y,m+1,0).getDate(),sun=0,psun=0;for(let d=1;d<=tot;d++){let c=new Date(y,m,d);if(c.getDay()===0){sun++;if(d<=t)psun++;}}let w=tot-sun;return{workingDaysTotal:w>0?w:1,pastWorkingDays:(t-psun)>=0?(t-psun):0};}
+function renderDailyCalendar(){let n=new Date(),y=n.getFullYear(),m=n.getMonth(),t=n.getDate(),mn=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],fmn=["January","February","March","April","May","June","July","August","September","October","November","December"],wd=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];document.getElementById('calMonthName').innerText=mn[m];document.getElementById('calDayNum').innerText=t<10?'0'+t:t;document.getElementById('calWeekdayName').innerText=wd[n.getDay()];document.getElementById('calFullDateText').innerText=`${fmn[m]} ${t}, ${y}`;}
+renderDailyCalendar();
+
+function toggleTheme(){let h=document.documentElement,b=document.getElementById('themeBtn');if(h.getAttribute('data-theme')==='light'){h.setAttribute('data-theme','dark');b.innerText='☀️';localStorage.setItem('abdul_theme','dark');}else{h.setAttribute('data-theme','light');b.innerText='🌙';localStorage.setItem('abdul_theme','light');}}
+function getNum(v){let x=parseFloat(v);return isNaN(x)?0:x;}
+
+function calculateAll(){
+  let rate=getNum(document.getElementById('rateInput').innerText),aed=getNum(document.getElementById('aedAmountInput').innerText);
+  let inc=rate+(rate*0.025);document.getElementById('incentiveResult').innerText=inc.toFixed(4);
+  let finalRes=inc*aed;document.getElementById('finalResult').innerText=finalRes.toFixed(2);
+  let expRows=document.querySelectorAll('#expensesTbody tr'),expTotal=0;expRows.forEach(r=>expTotal+=getNum(r.querySelector('.exp-val').innerText));
+  document.getElementById('expTotalResult').innerText=expTotal.toFixed(2);
+  document.getElementById('expInAedResult').innerText=(inc>0?expTotal/inc:0).toFixed(2);
+  let uaeRows=document.querySelectorAll('#uaeTbody tr'),uaeTot=0;uaeRows.forEach(r=>uaeTot+=getNum(r.querySelector('.uae-val').innerText));
+  let cal=getCalendarData(),abs=getNum(document.getElementById('absentDaysInput').innerText),pwd=cal.pastWorkingDays-abs;if(pwd<0)pwd=0;
+  let sal=(((342/26)*cal.workingDaysTotal+1920)/cal.workingDaysTotal)*pwd;document.getElementById('salaryResult').innerText=sal.toFixed(2);
+  let otDays=getNum(document.getElementById('otDaysInput').innerText),otAmt=73.25*otDays;document.getElementById('otResult').innerText=otAmt.toFixed(2);
+  let salOt=sal+otAmt;document.getElementById('salaryOtTotalResult').innerText=salOt.toFixed(2);
+  let totAed=uaeTot+salOt;document.getElementById('uaeTotalAED').innerText=totAed.toFixed(2);
+  let totBdt=totAed*inc;document.getElementById('uaeTotalBDT').innerText=totBdt.toFixed(2);
+  let mtbS=getNum(document.getElementById('mtbSavingsInput').innerText),mtbN=getNum(document.getElementById('mtbNrbInput').innerText),brac=getNum(document.getElementById('bracProvashiInput').innerText),dbblA=getNum(document.getElementById('dbblAgentInput').innerText),ucbl=getNum(document.getElementById('ucblIslamicInput').innerText);
+  let usable=mtbS+mtbN+brac+dbblA+ucbl;document.getElementById('usableAmountResult').innerText=usable.toFixed(2);
+  let dbblC=getNum(document.getElementById('dbblCoreInput').innerText),pub=getNum(document.getElementById('pubaliIslamicInput').innerText),ibbl=getNum(document.getElementById('ibblSavingsInput').innerText);
+  let hold=dbblC+pub+ibbl;document.getElementById('holdAmountResult').innerText=hold.toFixed(2);
+
+  let ccRows=document.querySelectorAll('#ccTbody tr'),ccTot=0;
+  ccRows.forEach(r=>ccTot+=getNum(r.querySelector('.cc-val').innerText));
+  document.getElementById('ccTotalResult').innerText=ccTot.toFixed(2);
+
+  let tLim=getNum(document.getElementById('tabbyLimitInput').innerText),tSplit=getNum(document.getElementById('tabbySplitInput').innerText);
+  document.getElementById('tabbyOutstandingResult').innerText=ccTot.toFixed(2);
+  let tUsed=ccTot-tSplit;document.getElementById('tabbyUsedResult').innerText=tUsed.toFixed(2);
+  document.getElementById('tabbyBalanceResult').innerText=(tLim-tUsed).toFixed(2);
+
+  let splitRows=document.querySelectorAll('#splitTbody tr'),sTot=0;
+  splitRows.forEach(r=>sTot+=getNum(r.querySelector('.split-val').innerText));
+  document.getElementById('splitTotalResult').innerText=sTot.toFixed(2);
+
+  let firstCcVal = ccRows.length > 0 ? getNum(ccRows[0].querySelector('.cc-val').innerText) : 0;
+  let firstSplitVal = splitRows.length > 0 ? getNum(splitRows[0].querySelector('.split-val').innerText) : 0;
+  document.getElementById('upcomingPaymentResult').innerText=(firstCcVal + firstSplitVal).toFixed(2);
+
+  let invDp=getNum(document.getElementById('investmentDownPaymentInput').innerText),invIns=getNum(document.getElementById('investmentInstallmentInput').innerText);
+  let invTot=invDp+invIns;document.getElementById('investmentTotalResult').innerText=invTot.toFixed(2);
+  let zCash=getNum(document.getElementById('zakatCashInput').innerText),gGram=getNum(document.getElementById('zakatGoldGramInput').innerText),gPrice=getNum(document.getElementById('zakatGoldPriceInput').innerText);
+  let gVal=(gGram*gPrice)*0.83;document.getElementById('zakatGoldValueResult').innerText=gVal.toFixed(2);
+  let zBus=getNum(document.getElementById('zakatBusinessInput').innerText),zRec=getNum(document.getElementById('zakatReceivablesInput').innerText);
+  let zAssets=zCash+gVal+zBus+zRec;document.getElementById('zakatTotalAssets').innerText=zAssets.toFixed(2);
+  let zLiab=getNum(document.getElementById('zakatLiabilitiesInput').innerText),zNet=zAssets-zLiab;if(zNet<0)zNet=0;document.getElementById('zakatNetWealth').innerText=zNet.toFixed(2);
+  let sPrice=getNum(document.getElementById('zakatSilverPriceInput').innerText),nisab=612.36*sPrice;document.getElementById('zakatNisabThreshold').innerText=nisab.toFixed(2);
+  let zPay=0;if(zNet>=nisab&&nisab>0){document.getElementById('zakatNisabStatus').innerText='Eligible';document.getElementById('zakatNisabStatus').style.color='#10b981';zPay=zNet*0.025;}else{document.getElementById('zakatNisabStatus').innerText='Not Eligible';}
+  document.getElementById('zakatPayableResult').innerText=zPay.toFixed(2);
+  saveDataSilently();
+}
+
+function exportToJSON(){
+  let uaeData=[];document.querySelectorAll('#uaeTbody tr').forEach(tr=>uaeData.push({name:tr.querySelector('.editable-label').innerText,val:tr.querySelector('.uae-val').innerText}));
+  let expData=[];document.querySelectorAll('#expensesTbody tr').forEach(tr=>expData.push({name:tr.querySelector('.editable-label').innerText,val:tr.querySelector('.exp-val').innerText}));
+  let ccData=[];document.querySelectorAll('#ccTbody tr').forEach(tr=>ccData.push({name:tr.querySelector('.editable-label').innerText,val:tr.querySelector('.cc-val').innerText}));
+  let splitData=[];document.querySelectorAll('#splitTbody tr').forEach(tr=>splitData.push({name:tr.querySelector('.editable-label').innerText,val:tr.querySelector('.split-val').innerText}));
+
+  let ds={
+    uaeAccounts:uaeData, expenses:expData, ccAccounts:ccData, splitAccounts:splitData,
+    rate:document.getElementById('rateInput').innerText,
+    aedAmount:document.getElementById('aedAmountInput').innerText,
+    absentDays:document.getElementById('absentDaysInput').innerText,
+    otDays:document.getElementById('otDaysInput').innerText,
+    mtbSavings:document.getElementById('mtbSavingsInput').innerText,
+    mtbNrb:document.getElementById('mtbNrbInput').innerText,
+    bracProvashi:document.getElementById('bracProvashiInput').innerText,
+    dbblAgent:document.getElementById('dbblAgentInput').innerText,
+    ucblIslamic:document.getElementById('ucblIslamicInput').innerText,
+    dbblCore:document.getElementById('dbblCoreInput').innerText,
+    pubaliIslamic:document.getElementById('pubaliIslamicInput').innerText,
+    ibblSavings:document.getElementById('ibblSavingsInput').innerText,
+    tabbyLimit:document.getElementById('tabbyLimitInput').innerText,
+    tabbySplit:document.getElementById('tabbySplitInput').innerText,
+    investmentDownPayment:document.getElementById('investmentDownPaymentInput').innerText,
+    investmentInstallment:document.getElementById('investmentInstallmentInput').innerText,
+    zakatCash:document.getElementById('zakatCashInput').innerText,
+    zakatGoldGram:document.getElementById('zakatGoldGramInput').innerText,
+    zakatGoldPrice:document.getElementById('zakatGoldPriceInput').innerText,
+    zakatBusiness:document.getElementById('zakatBusinessInput').innerText,
+    zakatReceivables:document.getElementById('zakatReceivablesInput').innerText,
+    zakatLiabilities:document.getElementById('zakatLiabilitiesInput').innerText,
+    zakatSilverPrice:document.getElementById('zakatSilverPriceInput').innerText
+  };
+  let blob=new Blob([JSON.stringify(ds,null,2)],{type:"application/json"});let url=URL.createObjectURL(blob);let a=document.createElement('a');a.href=url;a.download=`Financial_Dashboard_Backup_${new Date().toISOString().slice(0,10)}.json`;a.click();
+}
+
+function importFromJSON(e){
+  let f=e.target.files[0];if(!f)return;let r=new FileReader();
+  r.onload=function(ev){
+    try{
+      let ds=JSON.parse(ev.target.result);
+      if(ds.uaeAccounts)renderUaeTable(ds.uaeAccounts);
+      if(ds.expenses)renderExpensesTable(ds.expenses);
+      if(ds.ccAccounts)renderCcTable(ds.ccAccounts);
+      if(ds.splitAccounts)renderSplitTable(ds.splitAccounts);
+
+      if(ds.rate!==undefined)document.getElementById('rateInput').innerText=ds.rate;
+      if(ds.aedAmount!==undefined)document.getElementById('aedAmountInput').innerText=ds.aedAmount;
+      if(ds.absentDays!==undefined)document.getElementById('absentDaysInput').innerText=ds.absentDays;
+      if(ds.otDays!==undefined)document.getElementById('otDaysInput').innerText=ds.otDays;
+      if(ds.mtbSavings!==undefined)document.getElementById('mtbSavingsInput').innerText=ds.mtbSavings;
+      if(ds.mtbNrb!==undefined)document.getElementById('mtbNrbInput').innerText=ds.mtbNrb;
+      if(ds.bracProvashi!==undefined)document.getElementById('bracProvashiInput').innerText=ds.bracProvashi;
+      if(ds.dbblAgent!==undefined)document.getElementById('dbblAgentInput').innerText=ds.dbblAgent;
+      if(ds.ucblIslamic!==undefined)document.getElementById('ucblIslamicInput').innerText=ds.ucblIslamic;
+      if(ds.dbblCore!==undefined)document.getElementById('dbblCoreInput').innerText=ds.dbblCore;
+      if(ds.pubaliIslamic!==undefined)document.getElementById('pubaliIslamicInput').innerText=ds.pubaliIslamic;
+      if(ds.ibblSavings!==undefined)document.getElementById('ibblSavingsInput').innerText=ds.ibblSavings;
+      if(ds.tabbyLimit!==undefined)document.getElementById('tabbyLimitInput').innerText=ds.tabbyLimit;
+      if(ds.tabbySplit!==undefined)document.getElementById('tabbySplitInput').innerText=ds.tabbySplit;
+      if(ds.investmentDownPayment!==undefined)document.getElementById('investmentDownPaymentInput').innerText=ds.investmentDownPayment;
+      if(ds.investmentInstallment!==undefined)document.getElementById('investmentInstallmentInput').innerText=ds.investmentInstallment;
+      if(ds.zakatCash!==undefined)document.getElementById('zakatCashInput').innerText=ds.zakatCash;
+      if(ds.zakatGoldGram!==undefined)document.getElementById('zakatGoldGramInput').innerText=ds.zakatGoldGram;
+      if(ds.zakatGoldPrice!==undefined)document.getElementById('zakatGoldPriceInput').innerText=ds.zakatGoldPrice;
+      if(ds.zakatBusiness!==undefined)document.getElementById('zakatBusinessInput').innerText=ds.zakatBusiness;
+      if(ds.zakatReceivables!==undefined)document.getElementById('zakatReceivablesInput').innerText=ds.zakatReceivables;
+      if(ds.zakatLiabilities!==undefined)document.getElementById('zakatLiabilitiesInput').innerText=ds.zakatLiabilities;
+      if(ds.zakatSilverPrice!==undefined)document.getElementById('zakatSilverPriceInput').innerText=ds.zakatSilverPrice;
+
+      calculateAll();
+      alert('Backup restored successfully!');
+    }catch(err){alert('Failed to read backup file.');}
+    e.target.value='';
+  };
+  r.readAsText(f);
+}
+
+function saveDataSilently(){
+  let uaeData=[];document.querySelectorAll('#uaeTbody tr').forEach(tr=>uaeData.push({name:tr.querySelector('.editable-label').innerText,val:tr.querySelector('.uae-val').innerText}));
+  let expData=[];document.querySelectorAll('#expensesTbody tr').forEach(tr=>expData.push({name:tr.querySelector('.editable-label').innerText,val:tr.querySelector('.exp-val').innerText}));
+  let ccData=[];document.querySelectorAll('#ccTbody tr').forEach(tr=>ccData.push({name:tr.querySelector('.editable-label').innerText,val:tr.querySelector('.cc-val').innerText}));
+  let splitData=[];document.querySelectorAll('#splitTbody tr').forEach(tr=>splitData.push({name:tr.querySelector('.editable-label').innerText,val:tr.querySelector('.split-val').innerText}));
+
+  let ds={
+    uaeAccounts:uaeData, expenses:expData, ccAccounts:ccData, splitAccounts:splitData,
+    rate:document.getElementById('rateInput').innerText,
+    aedAmount:document.getElementById('aedAmountInput').innerText,
+    absentDays:document.getElementById('absentDaysInput').innerText,
+    otDays:document.getElementById('otDaysInput').innerText,
+    mtbSavings:document.getElementById('mtbSavingsInput').innerText,
+    mtbNrb:document.getElementById('mtbNrbInput').innerText,
+    bracProvashi:document.getElementById('bracProvashiInput').innerText,
+    dbblAgent:document.getElementById('dbblAgentInput').innerText,
+    ucblIslamic:document.getElementById('ucblIslamicInput').innerText,
+    dbblCore:document.getElementById('dbblCoreInput').innerText,
+    pubaliIslamic:document.getElementById('pubaliIslamicInput').innerText,
+    ibblSavings:document.getElementById('ibblSavingsInput').innerText,
+    tabbyLimit:document.getElementById('tabbyLimitInput').innerText,
+    tabbySplit:document.getElementById('tabbySplitInput').innerText,
+    investmentDownPayment:document.getElementById('investmentDownPaymentInput').innerText,
+    investmentInstallment:document.getElementById('investmentInstallmentInput').innerText,
+    zakatCash:document.getElementById('zakatCashInput').innerText,
+    zakatGoldGram:document.getElementById('zakatGoldGramInput').innerText,
+    zakatGoldPrice:document.getElementById('zakatGoldPriceInput').innerText,
+    zakatBusiness:document.getElementById('zakatBusinessInput').innerText,
+    zakatReceivables:document.getElementById('zakatReceivablesInput').innerText,
+    zakatLiabilities:document.getElementById('zakatLiabilitiesInput').innerText,
+    zakatSilverPrice:document.getElementById('zakatSilverPriceInput').innerText
+  };
+  localStorage.setItem('abdul_fin_v22',JSON.stringify(ds));
+}
+
+function saveData(){calculateAll();let m=document.getElementById('success-msg');m.style.display='inline';setTimeout(()=>m.style.display='none',3000);}
+
+window.onload=function(){
+  if(localStorage.getItem('abdul_theme')==='dark'){document.documentElement.setAttribute('data-theme','dark');document.getElementById('themeBtn').innerText='☀️';}
+  let saved=localStorage.getItem('abdul_fin_v22');
+  if(saved){
+    try{
+      let d=JSON.parse(saved);
+      renderUaeTable(d.uaeAccounts||defUae);
+      renderExpensesTable(d.expenses||defExp);
+      renderCcTable(d.ccAccounts||defCc);
+      renderSplitTable(d.splitAccounts||defSplit);
+
+      if(d.rate!==undefined)document.getElementById('rateInput').innerText=d.rate;
+      if(d.aedAmount!==undefined)document.getElementById('aedAmountInput').innerText=d.aedAmount;
+      if(d.absentDays!==undefined)document.getElementById('absentDaysInput').innerText=d.absentDays;
+      if(d.otDays!==undefined)document.getElementById('otDaysInput').innerText=d.otDays;
+      if(d.mtbSavings!==undefined)document.getElementById('mtbSavingsInput').innerText=d.mtbSavings;
+      if(d.mtbNrb!==undefined)document.getElementById('mtbNrbInput').innerText=d.mtbNrb;
+      if(d.bracProvashi!==undefined)document.getElementById('bracProvashiInput').innerText=d.bracProvashi;
+      if(d.dbblAgent!==undefined)document.getElementById('dbblAgentInput').innerText=d.dbblAgent;
+      if(d.ucblIslamic!==undefined)document.getElementById('ucblIslamicInput').innerText=d.ucblIslamic;
+      if(d.dbblCore!==undefined)document.getElementById('dbblCoreInput').innerText=d.dbblCore;
+      if(d.pubaliIslamic!==undefined)document.getElementById('pubaliIslamicInput').innerText=d.pubaliIslamic;
+      if(d.ibblSavings!==undefined)document.getElementById('ibblSavingsInput').innerText=d.ibblSavings;
+      if(d.tabbyLimit!==undefined)document.getElementById('tabbyLimitInput').innerText=d.tabbyLimit;
+      if(d.tabbySplit!==undefined)document.getElementById('tabbySplitInput').innerText=d.tabbySplit;
+      if(d.investmentDownPayment!==undefined)document.getElementById('investmentDownPaymentInput').innerText=d.investmentDownPayment;
+      if(d.investmentInstallment!==undefined)document.getElementById('investmentInstallmentInput').innerText=d.investmentInstallment;
+      if(d.zakatCash!==undefined)document.getElementById('zakatCashInput').innerText=d.zakatCash;
+      if(d.zakatGoldGram!==undefined)document.getElementById('zakatGoldGramInput').innerText=d.zakatGoldGram;
+      if(d.zakatGoldPrice!==undefined)document.getElementById('zakatGoldPriceInput').innerText=d.zakatGoldPrice;
+      if(d.zakatBusiness!==undefined)document.getElementById('zakatBusinessInput').innerText=d.zakatBusiness;
+      if(d.zakatReceivables!==undefined)document.getElementById('zakatReceivablesInput').innerText=d.zakatReceivables;
+      if(d.zakatLiabilities!==undefined)document.getElementById('zakatLiabilitiesInput').innerText=d.zakatLiabilities;
+      if(d.zakatSilverPrice!==undefined)document.getElementById('zakatSilverPriceInput').innerText=d.zakatSilverPrice;
+    }catch(err){
+      renderUaeTable(defUae);renderExpensesTable(defExp);renderCcTable(defCc);renderSplitTable(defSplit);
+    }
+  }else{
+    renderUaeTable(defUae);
+    renderExpensesTable(defExp);
+    renderCcTable(defCc);
+    renderSplitTable(defSplit);
+  }
+  calculateAll();
+};
+
+(function(){
+  const map={snapUsable:'usableAmountResult',snapHold:'holdAmountResult',snapUae:'uaeTotalBDT',snapCc:'ccTotalResult',snapZakat:'zakatPayableResult',snapInvestment:'investmentTotalResult',snapExpenses:'expTotalResult'};
+  function sync(){Object.keys(map).forEach(k=>{let s=document.getElementById(map[k]),d=document.getElementById(k);if(s&&d)d.textContent=s.textContent.trim();});}
+  setInterval(sync,300);
+})();
+</script>
+</body>
+</html>
